@@ -1,0 +1,9 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "outDir": ".",
+    "declaration": false,
+  },
+  "include": ["index.tsx"],
+  "exclude": [] // Ugly bodge as we're emitting to this directory
+}

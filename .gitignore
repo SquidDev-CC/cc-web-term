@@ -1,8 +1,12 @@
 /node_modules
 /make_font.py
 
+# Normal build files
+/dist
 /build
-/src/styles.css.d.ts
-/example/main.js
-/example/main.css
-/assets/gif.worker.js
+*.d.ts
+
+# Example build files
+/example/index.js
+/example/term_font*
+/example/main*

@@ -3,7 +3,6 @@ export { Terminal, TerminalProps } from "./terminal/component";
 export { TerminalData } from "./terminal/data";
 
 import save from "./files/save";
-export { save };
-
-import * as font from "./font";
-export const Font = font;
+import * as Font from "./font";
+import * as Styles from "./styles.css";
+export { save, Font, Styles };

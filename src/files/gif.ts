@@ -28,10 +28,11 @@
  */
 
 import logger from "../log";
+import gif_worker from "./gif.worker";
+
 const log = logger("GIF encoding");
 
 export type Options = {
-  workerScript: string,
   workers: number,
   repeat: number,
   background: string,
@@ -107,7 +108,7 @@ export class GIF {
   public onProgress?: (progress: number) => void;
   public onFinished?: (data: Blob) => void;
 
-  constructor(options: Partial<Options> & { workerScript: string, width: number, height: number }) {
+  constructor(options: Partial<Options> & { width: number, height: number }) {
     this.options = { ...defaults, ...options };
   }
 
@@ -163,7 +164,7 @@ export class GIF {
     const numWorkers = Math.min(this.options.workers, this.frames.length);
     for (let i = this.freeWorkers.length; i < numWorkers; i++) {
       log(`Spawning worker ${i}`);
-      const worker = new Worker(this.options.workerScript);
+      const worker = new Worker(gif_worker);
       worker.onmessage = (event: MessageEvent) => {
         this.activeWorkers.splice(this.activeWorkers.indexOf(worker), 1);
         this.freeWorkers.push(worker);

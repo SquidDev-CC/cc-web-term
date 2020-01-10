@@ -1,5 +1,7 @@
 import { Component, h, render } from "preact";
-import { IComputerActionable, Semaphore, Terminal, TerminalData } from "../src/index";
+
+import termFont from "../assets/term_font.png";
+import { IComputerActionable, Semaphore, Terminal, TerminalData } from "../dist/index";
 // Typically would import from "cc-web-term" instead.
 
 type TerminalState = {
@@ -21,8 +23,7 @@ class TerminalDemo extends Component<{}, TerminalState> implements IComputerActi
     return <Terminal
       id={123} label={"My computer"} on={on}
       changed={this.semaphore} computer={this} focused={true} terminal={this.term}
-      font={"../assets/term_font.png"} gifWorker={"../assets/gif.worker.js"}
-    />;
+      font={termFont} />;
   }
 
   private write(text: string) {

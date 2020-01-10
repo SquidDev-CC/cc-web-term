@@ -33,7 +33,6 @@ export type TerminalProps = {
   // Internal behaviour
   focused: boolean,      /** Whether this component is considered focused. */
   font: string,          /** The font to draw the terminal with  */
-  gifWorker: string,     /** Path to "gif.worker.js" */
 };
 
 type TerminalState = {
@@ -94,10 +93,10 @@ export class Terminal extends Component<TerminalProps, TerminalState> {
   public componentDidMount() {
     // Fetch the "key" elements
     const base = this.base as Element;
-    this.canvasElem = base.querySelector(".terminal-canvas") as HTMLCanvasElement;
+    this.canvasElem = base.querySelector(`.${terminal_canvas}`) as HTMLCanvasElement;
     this.canvasContext = this.canvasElem.getContext("2d") as CanvasRenderingContext2D;
-    this.inputElem = base.querySelector(".terminal-input") as HTMLInputElement;
-    this.wrapperElem = base.querySelector(".terminal-wrapper") as HTMLDivElement;
+    this.inputElem = base.querySelector(`.${terminal_input}`) as HTMLInputElement;
+    this.wrapperElem = base.querySelector(`.${terminal_wrapper}`) as HTMLDivElement;
 
     // Subscribe to some events to allow us to shedule a redraw
     window.addEventListener("resize", this.onResized);
@@ -480,7 +479,6 @@ export class Terminal extends Component<TerminalProps, TerminalState> {
       // If we're not recording, start recording.
       case RecordingState.None:
         this.gif = new GIF({
-          workerScript: this.props.gifWorker,
           width: this.canvasElem.width,
           height: this.canvasElem.height,
           quality: 10,
