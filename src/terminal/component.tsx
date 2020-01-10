@@ -4,6 +4,10 @@ import { GIF } from "../files/gif";
 import saveBlob from "../files/save";
 import { Camera, NoEntry, Off, On, Videocam, VideocamRecording } from "../font";
 import logger from "../log";
+import {
+  action_button, terminal_bar, terminal_button, terminal_buttons_right, terminal_canvas, terminal_info,
+  terminal_input, terminal_progress, terminal_view, terminal_wrapper,
+} from "../styles.css";
 import { TerminalData } from "./data";
 import { convertKey, convertMouseButton, convertMouseButtons } from "./input";
 import * as render from "./render";
@@ -79,10 +83,10 @@ export class Terminal extends Component<TerminalProps, TerminalState> {
     });
 
     this.vdom = [
-      <canvas class="terminal-canvas"
+      <canvas class={terminal_canvas}
         onMouseDown={this.onMouse} onMouseUp={this.onMouse} onMouseMove={this.onMouse}
         onWheel={this.onMouseWheel} onContextMenu={this.onEventDefault} />,
-      <input type="text" class="terminal-input"
+      <input type="text" class={terminal_input}
         onPaste={this.onPaste} onKeyDown={this.onKey} onKeyUp={this.onKey} onInput={this.onInput}></input>,
     ];
   }
@@ -126,33 +130,33 @@ export class Terminal extends Component<TerminalProps, TerminalState> {
 
   public render({ id, label, on }: TerminalProps, { recording, progress }: TerminalState) {
     const recordingDisabled = recording === RecordingState.Rendering;
-    return <div class="terminal-view">
-      <div class="terminal-wrapper">
+    return <div class={terminal_view}>
+      <div class={terminal_wrapper}>
         {...this.vdom}
-        <div class="terminal-bar">
-          <button class="action-button terminal-button" type="button"
+        <div class={terminal_bar}>
+          <button class={`${action_button} ${terminal_button}`} type="button"
             title={on ? "Turn this computer off" : "Turn this computer on"}
             onClick={on ? this.onPowerOff : this.onPowerOn}>
             {on ? <On /> : <Off />}
           </button>
-          <span class="terminal-info">{labelElement(id, label)}</span>
+          <span class={terminal_info}>{labelElement(id, label)}</span>
 
-          <span class="terminal-buttons-right">
-            <button class="action-button terminal-button" type="button"
+          <span class={terminal_buttons_right}>
+            <button class={`${action_button} ${terminal_button}`} type="button"
               title="Take a screenshot of the terminal." onClick={this.onScreenshot}>
               <Camera />
             </button>
-            <button class={`action-button terminal-button ${recordingDisabled ? "disabled" : ""}`} type="button"
+            <button class={`${action_button} ${terminal_button} ${recordingDisabled ? "disabled" : ""}`} type="button"
               title="Record the terminal to a GIF." onClick={this.onRecord}>
               {recording === RecordingState.Recording ? <VideocamRecording /> : <Videocam />}
             </button>
-            <button class="action-button terminal-button" type="button"
+            <button class={`${action_button} ${terminal_button}`} type="button"
               title="Send a `terminate' event to the computer." onClick={this.onTerminate}>
               <NoEntry />
             </button>
           </span>
         </div>
-        <div class="terminal-progress" style={`width: ${recording === RecordingState.Rendering ? progress * 100 : 0}%`}>
+        <div class={terminal_progress} style={`width: ${recording === RecordingState.Rendering ? progress * 100 : 0}%`}>
         </div>
       </div>
     </div>;

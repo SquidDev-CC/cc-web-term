@@ -1,6 +1,8 @@
 /node_modules
-/build
-
-/example/main.js
-/assets/gif.worker.js
 /make_font.py
+
+/build
+/src/styles.css.d.ts
+/example/main.js
+/example/main.css
+/assets/gif.worker.js
