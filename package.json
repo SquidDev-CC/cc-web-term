@@ -13,7 +13,7 @@
   "license": "BSD-3-Clause",
   "scripts": {
     "tsc": "tsc --project .",
-    "prepack": "npm run tsc && node tools/copy.js node_modules/gif.js/dist/gif.worker.js assets/gif.worker.js",
+    "prepare": "npm run tsc && node tools/copy.js node_modules/gif.js/dist/gif.worker.js assets/gif.worker.js",
     "tslint": "tslint --project .",
     "rollup": "rollup -c rollup.config.js",
     "host": "python -m http.server 8080"
@@ -26,7 +26,6 @@
     "@rollup/plugin-commonjs": "^11.0.1",
     "@rollup/plugin-node-resolve": "^7.0.0",
     "rollup": "^1.29.0",
-    "rollup-plugin-node-builtins": "^2.1.2",
     "tslint": "^5.20.1",
     "typescript": "^3.7.4"
   },
