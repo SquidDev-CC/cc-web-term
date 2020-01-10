@@ -1,0 +1,75 @@
+.action-button {
+  background: none;
+  color: inherit;
+
+  border: none;
+  padding: 0;
+  margin: 0;
+
+  font-size: 1em;
+  font-family: inherit;
+  line-height: inherit;
+  cursor: pointer;
+}
+
+.action-button.disabled {
+  cursor: initial;
+  color: #888;
+}
+
+.icon-font {
+  height: 1em;
+  overflow: visible;
+}
+
+.terminal-view {
+  overflow-x: hidden;
+}
+
+.terminal-wrapper {
+  margin: 30px auto 0px auto;
+}
+
+.terminal-canvas {
+  image-rendering: optimizeSpeed;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: -o-crisp-edges;
+  image-rendering: optimize-contrast;
+  -ms-interpolation-mode: nearest-neighbor;
+
+  display: block;
+}
+
+.terminal-bar {
+  background: #eee;
+  font-size: 0.8em;
+}
+
+.terminal-info, .terminal-button {
+  padding: 3px;
+  display: inline-block;
+}
+
+.terminal-info-label {
+  color: #444;
+  font-weight: 600;
+}
+
+.terminal-buttons-right {
+  float: right;
+}
+
+.terminal-button:hover { background: #ddd; }
+.terminal-button.disabled:hover { background: none; }
+
+.terminal-input {
+  position: absolute;
+  left: -1000px;
+  top: -1000px;
+}
+
+.terminal-progress {
+  height: 2px;
+  background: #333;
+}

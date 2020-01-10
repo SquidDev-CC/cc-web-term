@@ -1,0 +1,27 @@
+{
+  "compilerOptions": {
+    "target": "ES6",
+    "module": "ES6",
+    "moduleResolution": "node",
+    "lib": ["es2015", "dom"],
+    "declaration": true,
+    "outDir": "./build",
+
+    // Additional compile options
+    "noEmitOnError": true,
+    "preserveWatchOutput": true,
+
+    "jsx": "react",
+    "jsxFactory": "h",
+
+    // Strict Type-Checking Options
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+
+    // "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true
+  }
+}
