@@ -1,14 +1,14 @@
 import { Component, h, render } from "preact";
 
 import termFont from "../assets/term_font.png";
-import { IComputerActionable, Semaphore, Terminal, TerminalData } from "../dist/index";
+import { ComputerActionable, Semaphore, Terminal, TerminalData } from "../dist/index";
 // Typically would import from "cc-web-term" instead.
 
 type TerminalState = {
   on: boolean,
 };
 
-class TerminalDemo extends Component<{}, TerminalState> implements IComputerActionable {
+class TerminalDemo extends Component<{}, TerminalState> implements ComputerActionable {
   private readonly semaphore = new Semaphore();
   private readonly term = new TerminalData();
 
