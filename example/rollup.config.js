@@ -1,7 +1,7 @@
 import commonjs from "@rollup/plugin-commonjs";
-import postcss from 'rollup-plugin-postcss';
+import postcss from "rollup-plugin-postcss";
 import resolve from "@rollup/plugin-node-resolve";
-import url from '@rollup/plugin-url';
+import url from "@rollup/plugin-url";
 
 export default {
   input: "index.js",
@@ -14,13 +14,13 @@ export default {
   plugins: [
     postcss({
       extract: true,
-      namedExports: name => name.replace(/-/g, "_"),
+      namedExports: name => name.replace(/-([a-z])/g, (_, x) => x.toUpperCase()),
       modules: true,
     }),
     url({
       limit: 1024,
-      fileName: '[name]-[hash][extname]',
-      include: ['**/*.worker.js', '../assets/**/*.png'], // Terrible bodge to include files in ../assets
+      fileName: "[name]-[hash][extname]",
+      include: ["**/*.worker.js", "../assets/**/*.png"], // Terrible bodge to include files in ../assets
     }),
 
     resolve({ browser: true, }),

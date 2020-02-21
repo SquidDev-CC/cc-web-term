@@ -1,7 +1,7 @@
 /** Converts our styles into tsc files */
 const fs = require("fs");
 const postcss = require("postcss");
-const selector = require('postcss-selector-parser')();
+const selector = require("postcss-selector-parser")();
 
 // Convert styles.css into a ts.d file
 const contents = fs.readFileSync("src/styles.css");
@@ -10,7 +10,8 @@ const css = postcss.parse(contents, { from: "src/styles.css" });
 const rules = new Set();
 css.walkRules(rule => selector.astSync(rule.selector).walkClasses(x => rules.add(x.value)));
 
-const out = Array.from(rules).map(x => `export const ${x.replace(/-/g, "_")} : string;\n`).join("");
+const rename = name => name.replace(/-([a-z])/g, (_, x) => x.toUpperCase());
+const out = Array.from(rules).map(x => `export const ${rename(x)} : string;\n`).join("");
 fs.writeFileSync("src/styles.css.d.ts", out);
 
 const pathExport = `declare const path: string;
@@ -26,3 +27,6 @@ fs.copyFileSync("src/styles.css.d.ts", "dist/styles.css.d.ts");
 for (const path of ["src/files/gif.worker", "dist/files/gif.worker", "assets/term_font.png", "assets/term_font_hd.png"]) {
   fs.writeFileSync(`${path}.d.ts`, pathExport);
 }
+
+// We just ignore everything in .gitignore.
+fs.copyFileSync(".gitignore", ".eslintignore");

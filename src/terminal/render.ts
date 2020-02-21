@@ -55,10 +55,10 @@ export const loadFont = (path: string) => {
     paletteCache: {},
   };
 
-  font.promise = new Promise((resolve, _reject) => {
+  font.promise = new Promise(resolve => {
     image.onload = () => {
       for (const key in defaultPalette) {
-        if (!defaultPalette.hasOwnProperty(key)) continue;
+        if (!Object.prototype.hasOwnProperty.call(defaultPalette, key)) continue;
         loadPalette(font, defaultPalette[key]);
       }
 

@@ -1,5 +1,7 @@
 /node_modules
 /make_font.py
+/.vscode
+/.eslintignore
 
 # Normal build files
 /dist

@@ -1,4 +1,4 @@
-export { Semaphore, LuaValue, IComputerActionable } from "./computer";
+export { Semaphore, LuaValue, ComputerActionable as IComputerActionable } from "./computer";
 export { Terminal, TerminalProps } from "./terminal/component";
 export { TerminalData } from "./terminal/data";
 

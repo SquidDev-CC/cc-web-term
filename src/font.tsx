@@ -1,8 +1,8 @@
 import { VNode, h } from "preact";
-import { icon_font } from "./styles.css";
+import { iconFont } from "./styles.css";
 
-const mk = (child: VNode<any>) => {
-  const node = <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000" class={icon_font}>
+const mk = (child: VNode<unknown>) => {
+  const node = <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000" class={iconFont}>
     {child}
   </svg>;
   return () => node;

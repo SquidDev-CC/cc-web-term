@@ -22,7 +22,7 @@ export type LuaValue = number | string | boolean;
 /**
  * An object on which one can perform computer actions.
  */
-export interface IComputerActionable {
+export interface ComputerActionable {
   /**
    * Queue an event on the computer
    */

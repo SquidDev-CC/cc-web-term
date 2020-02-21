@@ -1,14 +1,14 @@
 import { Component, JSX, h } from "preact";
-import { IComputerActionable, Semaphore } from "../computer";
+import type { ComputerActionable, Semaphore } from "../computer";
 import { GIF } from "../files/gif";
 import saveBlob from "../files/save";
 import { Camera, NoEntry, Off, On, Videocam, VideocamRecording } from "../font";
 import logger from "../log";
 import {
-  action_button, terminal_bar, terminal_button, terminal_buttons_right, terminal_canvas, terminal_info,
-  terminal_input, terminal_progress, terminal_view, terminal_wrapper,
+  actionButton, terminalBar, terminalButton, terminalButtonsRight, terminalCanvas, terminalInfo,
+  terminalInput, terminalProgress, terminalView, terminalWrapper,
 } from "../styles.css";
-import { TerminalData } from "./data";
+import type { TerminalData } from "./data";
 import { convertKey, convertMouseButton, convertMouseButtons } from "./input";
 import * as render from "./render";
 
@@ -24,7 +24,7 @@ export type TerminalProps = {
   id: number | null,    /** The computer's ID */
   label: string | null, /** The computer's label */
   on: boolean,          /** Whether the computer is on */
-  computer: IComputerActionable, /** The computer to fire events back to */
+  computer: ComputerActionable, /** The computer to fire events back to */
 
   // Terminal data
   changed: Semaphore,     /** A semaphore which is signaled when the terminal changes */
@@ -73,7 +73,7 @@ export class Terminal extends Component<TerminalProps, TerminalState> {
   private gif: GIF | null = null;
   private lastGifFrame: number | null = null;
 
-  public constructor(props: TerminalProps, context: any) {
+  public constructor(props: TerminalProps, context: unknown) {
     super(props, context);
 
     this.setState({
@@ -82,10 +82,10 @@ export class Terminal extends Component<TerminalProps, TerminalState> {
     });
 
     this.vdom = [
-      <canvas class={terminal_canvas}
+      <canvas class={terminalCanvas}
         onMouseDown={this.onMouse} onMouseUp={this.onMouse} onMouseMove={this.onMouse}
         onWheel={this.onMouseWheel} onContextMenu={this.onEventDefault} />,
-      <input type="text" class={terminal_input}
+      <input type="text" class={terminalInput}
         onPaste={this.onPaste} onKeyDown={this.onKey} onKeyUp={this.onKey} onInput={this.onInput}></input>,
     ];
   }
@@ -93,10 +93,10 @@ export class Terminal extends Component<TerminalProps, TerminalState> {
   public componentDidMount() {
     // Fetch the "key" elements
     const base = this.base as Element;
-    this.canvasElem = base.querySelector(`.${terminal_canvas}`) as HTMLCanvasElement;
+    this.canvasElem = base.querySelector(`.${terminalCanvas}`) as HTMLCanvasElement;
     this.canvasContext = this.canvasElem.getContext("2d") as CanvasRenderingContext2D;
-    this.inputElem = base.querySelector(`.${terminal_input}`) as HTMLInputElement;
-    this.wrapperElem = base.querySelector(`.${terminal_wrapper}`) as HTMLDivElement;
+    this.inputElem = base.querySelector(`.${terminalInput}`) as HTMLInputElement;
+    this.wrapperElem = base.querySelector(`.${terminalWrapper}`) as HTMLDivElement;
 
     // Subscribe to some events to allow us to shedule a redraw
     window.addEventListener("resize", this.onResized);
@@ -129,33 +129,33 @@ export class Terminal extends Component<TerminalProps, TerminalState> {
 
   public render({ id, label, on }: TerminalProps, { recording, progress }: TerminalState) {
     const recordingDisabled = recording === RecordingState.Rendering;
-    return <div class={terminal_view}>
-      <div class={terminal_wrapper}>
+    return <div class={terminalView}>
+      <div class={terminalWrapper}>
         {...this.vdom}
-        <div class={terminal_bar}>
-          <button class={`${action_button} ${terminal_button}`} type="button"
+        <div class={terminalBar}>
+          <button class={`${actionButton} ${terminalButton}`} type="button"
             title={on ? "Turn this computer off" : "Turn this computer on"}
             onClick={on ? this.onPowerOff : this.onPowerOn}>
             {on ? <On /> : <Off />}
           </button>
-          <span class={terminal_info}>{labelElement(id, label)}</span>
+          <span class={terminalInfo}>{labelElement(id, label)}</span>
 
-          <span class={terminal_buttons_right}>
-            <button class={`${action_button} ${terminal_button}`} type="button"
+          <span class={terminalButtonsRight}>
+            <button class={`${actionButton} ${terminalButton}`} type="button"
               title="Take a screenshot of the terminal." onClick={this.onScreenshot}>
               <Camera />
             </button>
-            <button class={`${action_button} ${terminal_button} ${recordingDisabled ? "disabled" : ""}`} type="button"
+            <button class={`${actionButton} ${terminalButton} ${recordingDisabled ? "disabled" : ""}`} type="button"
               title="Record the terminal to a GIF." onClick={this.onRecord}>
               {recording === RecordingState.Recording ? <VideocamRecording /> : <Videocam />}
             </button>
-            <button class={`${action_button} ${terminal_button}`} type="button"
+            <button class={`${actionButton} ${terminalButton}`} type="button"
               title="Send a `terminate' event to the computer." onClick={this.onTerminate}>
               <NoEntry />
             </button>
           </span>
         </div>
-        <div class={terminal_progress} style={`width: ${recording === RecordingState.Rendering ? progress * 100 : 0}%`}>
+        <div class={terminalProgress} style={`width: ${recording === RecordingState.Rendering ? progress * 100 : 0}%`}>
         </div>
       </div>
     </div>;
@@ -259,10 +259,12 @@ export class Terminal extends Component<TerminalProps, TerminalState> {
 
     // Prevent blur when up/down-scaling
     ctx.imageSmoothingEnabled = false;
+    /* eslint-disable @typescript-eslint/no-explicit-any */
     (ctx as any).oImageSmoothingEnabled = false;
     (ctx as any).webkitImageSmoothingEnabled = false;
     (ctx as any).mozImageSmoothingEnabled = false;
     (ctx as any).msImageSmoothingEnabled = false;
+    /* eslint-enable @typescript-eslint/no-explicit-any */
 
     // And render!
     if (terminal.sizeX === 0 && terminal.sizeY === 0) {
@@ -316,6 +318,7 @@ export class Terminal extends Component<TerminalProps, TerminalState> {
 
   private onPaste = (event: ClipboardEvent) => {
     this.onEventDefault(event);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     this.paste((event.clipboardData || (window as any).clipboardData));
   }
 
@@ -397,6 +400,7 @@ export class Terminal extends Component<TerminalProps, TerminalState> {
     // Handle pasting. Might be worth adding shift+insert support too.
     // Note this is needed as we block the main paste event.
     if (event.type === "keydown" && (event.ctrlKey && event.code === "KeyV")) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const data = (window as any).clipboardData;
       if (data) {
         this.paste(data);

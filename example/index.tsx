@@ -19,7 +19,7 @@ class TerminalDemo extends Component<{}, TerminalState> implements IComputerActi
     this.term.resize(51, 19);
   }
 
-  public render({ }, { on }: TerminalState) {
+  public render(_: {}, { on }: TerminalState) {
     return <Terminal
       id={123} label={"My computer"} on={on}
       changed={this.semaphore} computer={this} focused={true} terminal={this.term}
