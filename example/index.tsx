@@ -1,7 +1,7 @@
 import { Component, h, render } from "preact";
 
 import termFont from "../assets/term_font.png";
-import { ComputerActionable, Semaphore, Terminal, TerminalData } from "../dist/index";
+import { ComputerActionable, KeyCode, LuaValue, Semaphore, Terminal, TerminalData, lwjgl2Code } from "../dist/index";
 // Typically would import from "cc-web-term" instead.
 
 type TerminalState = {
@@ -31,8 +31,18 @@ class TerminalDemo extends Component<{}, TerminalState> implements ComputerActio
     this.semaphore.signal();
   }
 
-  public queueEvent(event: string) {
-    this.write(`Got ${event}`);
+  public queueEvent(event: string, args: LuaValue[]) {
+    this.write(`Got ${event} ${JSON.stringify(args)}`);
+  }
+
+  public keyDown(key: KeyCode, repeat: boolean): void {
+    const code = lwjgl2Code(key);
+    if (code !== undefined) this.queueEvent("key", [code, repeat]);
+  }
+
+  public keyUp(key: KeyCode): void {
+    const code = lwjgl2Code(key);
+    if (code !== undefined) this.queueEvent("key_up", [code]);
   }
 
   public turnOn() {

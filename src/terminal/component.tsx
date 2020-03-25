@@ -12,7 +12,7 @@ import type { TerminalData } from "./data";
 import { convertKey, convertMouseButton, convertMouseButtons } from "./input";
 import * as render from "./render";
 
-enum RecordingState { None, Recording, Rendering }
+const enum RecordingState { None, Recording, Rendering }
 
 const log = logger("Terminal");
 
@@ -420,12 +420,12 @@ export class Terminal extends Component<TerminalProps, TerminalState> {
     if (code || event.key.length === 1) this.onEventDefault(event);
 
     if (event.type === "keydown") {
-      if (code) this.props.computer.queueEvent("key", [code, event.repeat]);
+      if (code) this.props.computer.keyDown(code, event.repeat);
       if (!event.altKey && !event.ctrlKey && event.key.length === 1) {
         this.props.computer.queueEvent("char", [event.key]);
       }
     } else if (event.type === "keyup") {
-      if (code) this.props.computer.queueEvent("key_up", [code]);
+      if (code) this.props.computer.keyUp(code);
     }
   }
 

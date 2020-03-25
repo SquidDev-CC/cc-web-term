@@ -16,6 +16,7 @@
     "prepare:tsc": "tsc --project .",
     "prepare": "npm run prepare:setup && npm run prepare:tsc",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
+    "lint:fix": "eslint . --fix --ext .js,.jsx,.ts,.tsx",
     "example:tsc": "tsc --project example",
     "example:rollup": "cd example && rollup -c rollup.config.js",
     "example:host": "python -m http.server 8080"

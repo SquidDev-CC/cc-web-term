@@ -1,3 +1,5 @@
+import type { KeyCode } from "./terminal/input";
+
 export class Semaphore {
   private readonly listeners: Set<() => void> = new Set();
 
@@ -27,6 +29,23 @@ export interface ComputerActionable {
    * Queue an event on the computer
    */
   queueEvent(event: string, args: LuaValue[]): void;
+
+  /**
+   * Fire a {@code key} event.
+   *
+   * @param key The key code. This can be translated to a suitable numeric value.
+   * @param repeat Whether this is a repeated key.
+   * @see #queueEvent
+   */
+  keyDown(key: KeyCode, repeat: boolean): void;
+
+  /**
+   * Fire a {@code key_up} event.
+   *
+   * @param key The key code. This can be translated to a suitable numeric value.
+   * @see #queueEvent
+   */
+  keyUp(key: KeyCode): void;
 
   /**
    * Turn on the computer
