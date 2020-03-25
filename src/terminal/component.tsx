@@ -412,20 +412,19 @@ export class Terminal extends Component<TerminalProps, TerminalState> {
     // Try to pull the key number from the event. We first try the key code
     // (ideal, as it's independent of layout), then the key itself, or the
     // uppercase key (tacky shortcut to handle 'a' and 'A').
-    const code
-      = convertKey(event.code)
-      || convertKey(event.key)
-      || convertKey(event.key.toUpperCase());
+    let code = convertKey(event.code);
+    if (code === undefined) code = convertKey(event.key);
+    if (code === undefined) code = convertKey(event.key.toUpperCase());
 
-    if (code || event.key.length === 1) this.onEventDefault(event);
+    if (code !== undefined || event.key.length === 1) this.onEventDefault(event);
 
     if (event.type === "keydown") {
-      if (code) this.props.computer.keyDown(code, event.repeat);
+      if (code !== undefined) this.props.computer.keyDown(code, event.repeat);
       if (!event.altKey && !event.ctrlKey && event.key.length === 1) {
         this.props.computer.queueEvent("char", [event.key]);
       }
     } else if (event.type === "keyup") {
-      if (code) this.props.computer.keyUp(code);
+      if (code !== undefined) this.props.computer.keyUp(code);
     }
   }
 
