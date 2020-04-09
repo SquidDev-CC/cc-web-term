@@ -24,6 +24,7 @@
 
 .terminal-view {
   overflow-x: hidden;
+  height: 100%;
 }
 
 .terminal-wrapper {

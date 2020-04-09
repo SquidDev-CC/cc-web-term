@@ -213,13 +213,14 @@ export class Terminal extends Component<TerminalProps, TerminalState> {
     this.changed = false;
 
     // Calculate terminal scaling to fit the screen
-    const actualWidth = this.wrapperElem.parentElement!.clientWidth - render.terminalMargin;
+    const actualWidth = this.wrapperElem.parentElement!.clientWidth - render.terminalMargin * 2;
+    const actualHeight = this.wrapperElem.parentElement!.clientHeight - render.terminalMargin * 2;
     const width = sizeX * render.cellWidth;
     const height = sizeY * render.cellHeight;
 
     // The scale has to be an integer (though converted within the renderer) to ensure pixels are integers.
     // Otherwise you get texture issues.
-    const scale = Math.max(1, Math.floor(actualWidth / width));
+    const scale = Math.max(1, Math.min(Math.floor(actualHeight / height), Math.floor(actualWidth / width)));
 
     const ctx = this.canvasContext;
 
