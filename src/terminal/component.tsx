@@ -214,7 +214,8 @@ export class Terminal extends Component<TerminalProps, TerminalState> {
 
     // Calculate terminal scaling to fit the screen
     const actualWidth = this.wrapperElem.parentElement!.clientWidth - render.terminalMargin * 2;
-    const actualHeight = this.wrapperElem.parentElement!.clientHeight - render.terminalMargin * 2;
+    /* [Note 'Padding']: 70px = 30px top-padding + action-bar + arbitrary bottom-padding. See styles.css too. */
+    const actualHeight = this.wrapperElem.parentElement!.clientHeight - render.terminalMargin * 2 - 70;
     const width = sizeX * render.cellWidth;
     const height = sizeY * render.cellHeight;
 

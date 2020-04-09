@@ -28,7 +28,7 @@
 }
 
 .terminal-wrapper {
-  margin: 30px auto 0px auto;
+  margin: 30px auto 0px auto; /* See [Note 'Padding'] in terminal/component.tsx. */
 }
 
 .terminal-canvas {
