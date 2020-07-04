@@ -2,7 +2,7 @@ import { Component, JSX, h } from "preact";
 import type { ComputerActionable, Semaphore } from "../computer";
 import { GIF } from "../files/gif";
 import saveBlob from "../files/save";
-import { Camera, NoEntry, Off, On, Videocam, VideocamRecording } from "../font";
+import { Camera, NoEntry, Off, On, Videocam, VideocamRecording, Fullscreen } from "../font";
 import logger from "../log";
 import {
   actionButton, terminalBar, terminalButton, terminalButtonsRight, terminalCanvas, terminalInfo,
@@ -148,6 +148,11 @@ export class Terminal extends Component<TerminalProps, TerminalState> {
             <button class={`${actionButton} ${terminalButton} ${recordingDisabled ? "disabled" : ""}`} type="button"
               title="Record the terminal to a GIF." onClick={this.onRecord}>
               {recording === RecordingState.Recording ? <VideocamRecording /> : <Videocam />}
+            </button>
+            <button class={`${actionButton} ${terminalButton}`} type="button"
+            title="Make the terminal full-screen" onClick={this.makeFullscreen}
+            >
+              <Fullscreen />
             </button>
             <button class={`${actionButton} ${terminalButton}`} type="button"
               title="Send a `terminate' event to the computer." onClick={this.onTerminate}>
@@ -517,5 +522,12 @@ export class Terminal extends Component<TerminalProps, TerminalState> {
         this.gif = null;
         this.lastGifFrame = null;
     }
+  }
+
+  private makeFullscreen = (event : Event) => {
+    this.onEventDefault(event);
+    (this.base as Element|null)?.requestFullscreen().catch(e => {
+      console.error("Cannot make full-screen", e);
+    })
   }
 }

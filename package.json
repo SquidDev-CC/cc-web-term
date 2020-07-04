@@ -1,10 +1,10 @@
 {
-  "name": "cc-web-term",
+  "name": "@squid-dev/cc-web-term",
   "version": "1.0.0",
   "description": "A ComputerCraft terminal for the internet",
   "repository": {
     "type": "git",
-    "url": "https://github.com/SquidDev-CC/cc-web-term.git"
+    "url": "git+https://github.com/SquidDev-CC/cc-web-term.git"
   },
   "keywords": [
     "computercraft"
@@ -23,25 +23,32 @@
   },
   "dependencies": {
     "gif.js": "^0.2.0",
-    "preact": "^10.3.4"
+    "preact": "^10.4.5"
   },
   "devDependencies": {
-    "@rollup/plugin-commonjs": "^11.0.2",
-    "@rollup/plugin-node-resolve": "^7.1.1",
+    "@rollup/plugin-commonjs": "^11.1.0",
+    "@rollup/plugin-node-resolve": "^7.1.3",
     "@rollup/plugin-url": "^4.0.2",
-    "@typescript-eslint/eslint-plugin": "^2.26.0",
-    "@typescript-eslint/parser": "^2.26.0",
+    "@typescript-eslint/eslint-plugin": "^2.34.0",
+    "@typescript-eslint/parser": "^2.34.0",
     "eslint": "^6.8.0",
-    "postcss": "^7.0.27",
+    "postcss": "^7.0.32",
     "postcss-selector-parser": "^6.0.2",
     "rollup": "^1.32.1",
-    "rollup-plugin-postcss": "^2.5.0",
-    "typescript": "^3.8.3"
+    "rollup-plugin-postcss": "^2.9.0",
+    "typescript": "^3.9.6"
   },
   "module": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
     "assets",
     "dist"
-  ]
+  ],
+  "bugs": {
+    "url": "https://github.com/SquidDev-CC/cc-web-term/issues"
+  },
+  "homepage": "https://github.com/SquidDev-CC/cc-web-term#readme",
+  "directories": {
+    "example": "example"
+  }
 }
