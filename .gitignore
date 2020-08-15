@@ -2,6 +2,7 @@
 /make_font.py
 /.vscode
 /.eslintignore
+/package-lock.json
 
 # Normal build files
 /dist
