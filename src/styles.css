@@ -66,8 +66,8 @@
 
 .terminal-input {
   position: absolute;
-  left: -1000px;
-  top: -1000px;
+  z-index: -1000;
+  opacity: 0;
 }
 
 .terminal-progress {
