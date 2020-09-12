@@ -1,8 +1,8 @@
-import { Component, JSX, h } from "preact";
+import { Component, ComponentChild, JSX, h } from "preact";
 import type { ComputerActionable, Semaphore } from "../computer";
 import { GIF } from "../files/gif";
 import saveBlob from "../files/save";
-import { Camera, NoEntry, Off, On, Videocam, VideocamRecording, Fullscreen } from "../font";
+import { Camera, Fullscreen, NoEntry, Off, On, Videocam, VideocamRecording } from "../font";
 import logger from "../log";
 import {
   actionButton, terminalBar, terminalButton, terminalButtonsRight, terminalCanvas, terminalInfo,
@@ -90,7 +90,7 @@ export class Terminal extends Component<TerminalProps, TerminalState> {
     ];
   }
 
-  public componentDidMount() {
+  public componentDidMount(): void {
     // Fetch the "key" elements
     const base = this.base as Element;
     this.canvasElem = base.querySelector(`.${terminalCanvas}`) as HTMLCanvasElement;
@@ -114,7 +114,7 @@ export class Terminal extends Component<TerminalProps, TerminalState> {
     this.queueDraw();
   }
 
-  public componentWillUnmount() {
+  public componentWillUnmount(): void {
     this.canvasElem = undefined;
     this.canvasContext = undefined;
     this.inputElem = undefined;
@@ -127,7 +127,7 @@ export class Terminal extends Component<TerminalProps, TerminalState> {
     this.drawQueued = false;
   }
 
-  public render({ id, label, on }: TerminalProps, { recording, progress }: TerminalState) {
+  public render({ id, label, on }: TerminalProps, { recording, progress }: TerminalState): ComponentChild {
     const recordingDisabled = recording === RecordingState.Rendering;
     return <div class={terminalView}>
       <div class={terminalWrapper}>
@@ -150,7 +150,7 @@ export class Terminal extends Component<TerminalProps, TerminalState> {
               {recording === RecordingState.Recording ? <VideocamRecording /> : <Videocam />}
             </button>
             <button class={`${actionButton} ${terminalButton}`} type="button"
-            title="Make the terminal full-screen" onClick={this.makeFullscreen}
+              title="Make the terminal full-screen" onClick={this.makeFullscreen}
             >
               <Fullscreen />
             </button>
@@ -166,13 +166,13 @@ export class Terminal extends Component<TerminalProps, TerminalState> {
     </div>;
   }
 
-  public componentDidUpdate() {
+  public componentDidUpdate(): void {
     this.changed = true;
     this.queueDraw();
     if (this.props.focused && this.inputElem) this.inputElem.focus();
   }
 
-  public queueDraw() {
+  public queueDraw(): void {
     if (this.mounted && !this.drawQueued) {
       this.drawQueued = true;
       window.requestAnimationFrame(time => {
@@ -528,6 +528,6 @@ export class Terminal extends Component<TerminalProps, TerminalState> {
     this.onEventDefault(event);
     (this.base as Element|null)?.requestFullscreen().catch(e => {
       console.error("Cannot make full-screen", e);
-    })
+    });
   }
 }

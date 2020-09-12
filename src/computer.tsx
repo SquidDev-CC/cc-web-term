@@ -3,15 +3,15 @@ import type { KeyCode } from "./terminal/input";
 export class Semaphore {
   private readonly listeners: Set<() => void> = new Set();
 
-  public attach(listener: () => void) {
+  public attach(listener: () => void): void {
     this.listeners.add(listener);
   }
 
-  public detach(listener: () => void) {
+  public detach(listener: () => void): void {
     this.listeners.delete(listener);
   }
 
-  public signal() {
+  public signal(): void {
     for (const listener of this.listeners) listener();
   }
 }

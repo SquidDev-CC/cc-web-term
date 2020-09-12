@@ -8,7 +8,7 @@ type TerminalState = {
   on: boolean,
 };
 
-class TerminalDemo extends Component<{}, TerminalState> implements ComputerActionable {
+class TerminalDemo extends Component<unknown, TerminalState> implements ComputerActionable {
   private readonly semaphore = new Semaphore();
   private readonly term = new TerminalData();
 
@@ -19,7 +19,7 @@ class TerminalDemo extends Component<{}, TerminalState> implements ComputerActio
     this.term.resize(51, 19);
   }
 
-  public render(_: {}, { on }: TerminalState) {
+  public render(_: unknown, { on }: TerminalState) {
     return <Terminal
       id={123} label={"My computer"} on={on}
       changed={this.semaphore} computer={this} focused={true} terminal={this.term}

@@ -84,7 +84,7 @@ const defaults = {
   background: "#fff",
   quality: 10, // pixel sample interval, lower is better
   transparent: null,
-  dither: false as false, // see GIFEncoder.js for dithering options
+  dither: false as const, // see GIFEncoder.js for dithering options
 };
 
 const frameDefaults: FrameOptions = {
@@ -128,7 +128,7 @@ export class GIF {
     });
   }
 
-  public render() {
+  public render(): void {
     if (this.running) throw new Error("Already rendering");
 
     this.running = true;
@@ -147,7 +147,7 @@ export class GIF {
     if (this.onProgress) this.onProgress(0);
   }
 
-  public abort() {
+  public abort(): void {
     while (true) {
       const worker = this.activeWorkers.shift();
       if (worker == null) break;

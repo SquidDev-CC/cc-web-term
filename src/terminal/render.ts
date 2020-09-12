@@ -40,7 +40,7 @@ const loadPalette = ({ image, paletteCache }: Font, colour: PaletteColour) => {
   return canvas;
 };
 
-export const loadFont = (path: string) => {
+export const loadFont = (path: string): Font => {
   const cached = fonts[path];
   if (cached) return cached;
 
@@ -132,7 +132,7 @@ export const foreground = (
 export const terminal = (
   ctx: CanvasRenderingContext2D, term: TerminalData, blink: boolean,
   scale: number, font: Font,
-) => {
+): void => {
   const sizeX = term.sizeX;
   const sizeY = term.sizeY;
 
@@ -155,7 +155,7 @@ export const terminal = (
 export const bsod = (
   ctx: CanvasRenderingContext2D, width: number, height: number, text: string,
   scale: number, font: Font,
-) => {
+): void => {
   ctx.beginPath();
   ctx.rect(
     0, 0,

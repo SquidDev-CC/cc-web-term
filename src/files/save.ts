@@ -10,7 +10,7 @@ const pad = (val: number, len: number) => {
  * @param extension The appropriate extension
  * @param blob The blob to save to
  */
-export default (prefix: string, extension: string, blob: Blob | null) => {
+export default (prefix: string, extension: string, blob: Blob | null): void => {
   if (!blob) return;
 
   // Somewhat inspired by https://github.com/eligrey/FileSaver.js/blob/master/src/FileSaver.js
