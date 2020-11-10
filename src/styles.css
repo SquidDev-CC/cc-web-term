@@ -1,4 +1,4 @@
-.action-button {
+.actionButton {
   background: none;
   color: inherit;
 
@@ -12,26 +12,28 @@
   cursor: pointer;
 }
 
-.action-button.disabled {
+.actionButton.disabled {
   cursor: initial;
   color: #888;
 }
 
-.icon-font {
+.iconFont {
   height: 1em;
   overflow: visible;
 }
 
-.terminal-view {
+.terminalView {
   overflow-x: hidden;
   height: 100%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.terminal-wrapper {
-  margin: 30px auto 0px auto; /* See [Note 'Padding'] in terminal/component.tsx. */
-}
+.terminalWrapper { }
 
-.terminal-canvas {
+.terminalCanvas {
   image-rendering: optimizeSpeed;
   image-rendering: -moz-crisp-edges;
   image-rendering: -webkit-optimize-contrast;
@@ -42,35 +44,35 @@
   display: block;
 }
 
-.terminal-bar {
+.terminalBar {
   background: #eee;
   font-size: 0.8em;
 }
 
-.terminal-info, .terminal-button {
+.terminalInfo, .terminalButton {
   padding: 3px;
   display: inline-block;
 }
 
-.terminal-info-label {
+.terminalInfoLabel {
   color: #444;
   font-weight: 600;
 }
 
-.terminal-buttons-right {
+.terminalButtonsRight {
   float: right;
 }
 
-.terminal-button:hover { background: #ddd; }
-.terminal-button.disabled:hover { background: none; }
+.terminalButton:hover { background: #ddd; }
+.terminalButton.disabled:hover { background: none; }
 
-.terminal-input {
+.terminalInput {
   position: absolute;
   z-index: -1000;
   opacity: 0;
 }
 
-.terminal-progress {
+.terminalProgress {
   height: 2px;
   background: #333;
 }

@@ -10,6 +10,4 @@
 *.d.ts
 
 # Example build files
-/example/index.js
-/example/term_font*
-/example/main*
+/example/out/

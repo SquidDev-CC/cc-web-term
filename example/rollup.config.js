@@ -1,20 +1,23 @@
 import commonjs from "@rollup/plugin-commonjs";
 import postcss from "rollup-plugin-postcss";
 import resolve from "@rollup/plugin-node-resolve";
+import typescript from '@rollup/plugin-typescript';
 import url from "@rollup/plugin-url";
+import { promises as fs } from "fs";
 
 export default {
-  input: "index.js",
+  input: "index.tsx",
   output: {
-    file: "main.js",
+    dir: "out",
     format: "iife"
   },
   context: "window",
 
   plugins: [
+    typescript(),
     postcss({
       extract: true,
-      namedExports: name => name.replace(/-([a-z])/g, (_, x) => x.toUpperCase()),
+      namedExports: true,
       modules: true,
     }),
     url({
@@ -25,5 +28,13 @@ export default {
 
     resolve({ browser: true, }),
     commonjs(),
+
+    {
+      name: "copy",
+      buildEnd: async () => {
+        // Who needs fancy copy plugins anyway?
+        await fs.copyFile("index.html", "out/index.html");
+      },
+    },
   ],
 };
