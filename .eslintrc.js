@@ -27,7 +27,7 @@ module.exports = {
   overrides: [
     {
       files: ["example/rollup.config.js"],
-      parserOptions: { sourceType: "module" },
+      parserOptions: { sourceType: "module", ecmaVersion: 2018, },
     },
 
     // The default TS config.

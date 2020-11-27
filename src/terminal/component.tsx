@@ -329,6 +329,22 @@ export class Terminal extends Component<TerminalProps, TerminalState> {
     this.paste((event.clipboardData || (window as any).clipboardData));
   }
 
+  private convertMousePos(event: MouseEvent) {
+    if(!this.canvasElem) throw "impossible";
+
+    const box = this.canvasElem.getBoundingClientRect();
+    const x = clamp(Math.floor(
+      (event.screenX - box.left - render.terminalMargin)
+      / (this.canvasElem.width - 2 * render.terminalMargin) * this.props.terminal.sizeX
+    ) + 1, 1, this.props.terminal.sizeX);
+    const y = clamp(Math.floor(
+      (event.screenY - box.top - render.terminalMargin)
+      / (this.canvasElem.height - 2 * render.terminalMargin) * this.props.terminal.sizeY
+    ) + 1, 1, this.props.terminal.sizeY);
+
+    return { x, y };
+  }
+
   private onMouse = (event: MouseEvent) => {
     this.onEventDefault(event);
     if (!this.canvasElem) return;
@@ -337,15 +353,7 @@ export class Terminal extends Component<TerminalProps, TerminalState> {
     // skip for now.
     if (event.type === "mousemove" && event.buttons === 0) return;
 
-    const x = clamp(
-      Math.floor((event.pageX - this.canvasElem.offsetLeft - render.terminalMargin)
-        / (this.canvasElem.width - 2 * render.terminalMargin) * this.props.terminal.sizeX) + 1,
-      1, this.props.terminal.sizeX);
-    const y = clamp(
-      Math.floor((event.pageY - this.canvasElem.offsetTop - render.terminalMargin)
-        / (this.canvasElem.height - 2 * render.terminalMargin) * this.props.terminal.sizeY) + 1,
-      1, this.props.terminal.sizeY);
-
+    const { x, y } = this.convertMousePos(event);
     switch (event.type) {
       case "mousedown": {
         const button = convertMouseButton(event.button);
@@ -382,15 +390,7 @@ export class Terminal extends Component<TerminalProps, TerminalState> {
     this.onEventDefault(event);
     if (!this.canvasElem) return;
 
-    const x = clamp(
-      Math.floor((event.pageX - this.canvasElem.offsetLeft - render.terminalMargin)
-        / (this.canvasElem.width - 2 * render.terminalMargin) * this.props.terminal.sizeX) + 1,
-      1, this.props.terminal.sizeX);
-    const y = clamp(
-      Math.floor((event.pageY - this.canvasElem.offsetTop - render.terminalMargin)
-        / (this.canvasElem.height - 2 * render.terminalMargin) * this.props.terminal.sizeY) + 1,
-      1, this.props.terminal.sizeY);
-
+    const { x, y } = this.convertMousePos(event);
     if (event.deltaY !== 0) {
       this.props.computer.queueEvent("mouse_scroll", [Math.sign(event.deltaY), x, y]);
     }
@@ -524,9 +524,9 @@ export class Terminal extends Component<TerminalProps, TerminalState> {
     }
   }
 
-  private makeFullscreen = (event : Event) => {
+  private makeFullscreen = (event: Event) => {
     this.onEventDefault(event);
-    (this.base as Element|null)?.requestFullscreen().catch(e => {
+    (this.base as Element | null)?.requestFullscreen().catch(e => {
       console.error("Cannot make full-screen", e);
     });
   }
