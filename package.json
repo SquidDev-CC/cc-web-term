@@ -1,6 +1,6 @@
 {
   "name": "@squid-dev/cc-web-term",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "description": "A ComputerCraft terminal for the internet",
   "repository": {
     "type": "git",
@@ -22,21 +22,21 @@
   },
   "dependencies": {
     "gif.js": "^0.2.0",
-    "preact": "^10.5.5"
+    "preact": "^10.5.7"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^16.0.0",
     "@rollup/plugin-node-resolve": "^10.0.0",
     "@rollup/plugin-typescript": "^6.1.0",
     "@rollup/plugin-url": "^5.0.1",
-    "@typescript-eslint/eslint-plugin": "^4.7.0",
-    "@typescript-eslint/parser": "^4.7.0",
-    "eslint": "^7.13.0",
-    "postcss": "^8.1.7",
+    "@typescript-eslint/eslint-plugin": "^4.8.2",
+    "@typescript-eslint/parser": "^4.8.2",
+    "eslint": "^7.14.0",
+    "postcss": "^8.1.10",
     "postcss-selector-parser": "^6.0.4",
-    "rollup": "^2.33.1",
+    "rollup": "^2.33.3",
     "rollup-plugin-postcss": "^3.1.8",
-    "typescript": "^4.0.5"
+    "typescript": "^4.1.2"
   },
   "module": "dist/index.js",
   "types": "dist/index.d.ts",
