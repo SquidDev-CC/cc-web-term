@@ -334,11 +334,11 @@ export class Terminal extends Component<TerminalProps, TerminalState> {
 
     const box = this.canvasElem.getBoundingClientRect();
     const x = clamp(Math.floor(
-      (event.screenX - box.left - render.terminalMargin)
+      (event.clientX - box.left - render.terminalMargin)
       / (this.canvasElem.width - 2 * render.terminalMargin) * this.props.terminal.sizeX
     ) + 1, 1, this.props.terminal.sizeX);
     const y = clamp(Math.floor(
-      (event.screenY - box.top - render.terminalMargin)
+      (event.clientY - box.top - render.terminalMargin)
       / (this.canvasElem.height - 2 * render.terminalMargin) * this.props.terminal.sizeY
     ) + 1, 1, this.props.terminal.sizeY);
 
