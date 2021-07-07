@@ -46,17 +46,14 @@
 
 .terminalBar {
   background: #eee;
+  color: #000;
+  fill: #000;
   font-size: 0.8em;
 }
 
 .terminalInfo, .terminalButton {
   padding: 3px;
   display: inline-block;
-}
-
-.terminalInfoLabel {
-  color: #444;
-  font-weight: 600;
 }
 
 .terminalButtonsRight {
