@@ -100,7 +100,7 @@ export const background = (
 
   ctx.beginPath();
   ctx.rect(cellX, cellY, actualWidth, actualHeight);
-  ctx.fillStyle = palette[color];
+  ctx.fillStyle = palette[color] || palette["f"];
   ctx.fill();
 };
 
@@ -123,7 +123,7 @@ export const foreground = (
   const imgY = font.margin + Math.floor(charcode / 16) * (imageH + font.margin * 2);
 
   ctx.drawImage(
-    loadPalette(font, palette[color]),
+    loadPalette(font, palette[color] || palette["0"]),
     imgX, imgY, imageW, imageH,
     cellX, cellY, cellWidth * scale, cellHeight * scale,
   );
