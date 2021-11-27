@@ -187,7 +187,7 @@ const keyboardCodes: { [key: string]: EKeyCode } = {
   "Stop": EKeyCode.Stop,
   "Ax": EKeyCode.Ax,
 
-  "NumpadEnter": EKeyCode.Enter, // We just map to "enter" right now, as that's what LJWGL 2 does. Not sure about 3.
+  "NumpadEnter": EKeyCode.NumPadEnter,
   "ControlRight": EKeyCode.RightCtrl,
   "NumpadComma": EKeyCode.NumPadComma,
   "NumpadDivide": EKeyCode.NumPadDivide,
