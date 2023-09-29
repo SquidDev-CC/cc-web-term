@@ -27,22 +27,30 @@ module.exports = {
   overrides: [
     {
       files: ["example/rollup.config.js"],
-      parserOptions: { sourceType: "module", ecmaVersion: 2018, },
+      parserOptions: {
+        sourceType: "module",
+        ecmaVersion: 2018,
+      },
     },
 
     // The default TS config.
     {
       files: ["*.ts", "*.tsx"],
       parser: "@typescript-eslint/parser",
-      parserOptions: { project: "tsconfig.json" },
+      parserOptions: {
+        tsconfigRootDir: __dirname,
+        project: true,
+      },
       plugins: [
         "@typescript-eslint",
       ],
       extends: [
-        "plugin:@typescript-eslint/eslint-recommended",
-        "plugin:@typescript-eslint/recommended",
+        "eslint:recommended",
+        "plugin:@typescript-eslint/recommended-type-checked",
+        "plugin:@typescript-eslint/stylistic-type-checked",
       ],
       rules: {
+        // Aesthetics
         "@typescript-eslint/member-delimiter-style": ["warn", {
           multiline: { delimiter: "comma" },
           singleline: { delimiter: "comma" },
@@ -50,25 +58,21 @@ module.exports = {
             interface: { multiline: { delimiter: "semi" } },
           },
         }],
-        "@typescript-eslint/no-inferrable-types": ["warn", {
-          ignoreParameters: true,
-          ignoreProperties: true,
-        }],
-        "@typescript-eslint/explicit-function-return-type": "off",
-        "@typescript-eslint/no-non-null-assertion": "off",
+        "@typescript-eslint/array-type": ["warn", { default: "generic" }],
+        "@typescript-eslint/consistent-type-definitions": "off",
+        "@typescript-eslint/consistent-indexed-object-style": "warn", // Useful, but not always!
+        "@typescript-eslint/no-inferrable-types": ["error", { ignoreProperties : true } ],
+        "@typescript-eslint/no-empty-function": "off",
+        "@typescript-eslint/no-unused-vars": ["error", { argsIgnorePattern: "^_" }],
 
-        "@typescript-eslint/explicit-member-accessibility": ["warn"],
-
-        // Use Typescript's unused variable warnings instead
-        "@typescript-eslint/no-unused-vars": "off",
-        "@typescript-eslint/no-unused-vars-experimental": "warn",
+        // Semantics
+        "@typescript-eslint/explicit-function-return-type": ["warn", { allowExpressions: true }],
+        // "@typescript-eslint/no-non-null-assertion": "off", // TODO: Audit these.
+        "@typescript-eslint/prefer-for-of": "warn",
+        "@typescript-eslint/prefer-includes": "warn",
+        "@typescript-eslint/prefer-nullish-coalescing": "warn",
+        "@typescript-eslint/prefer-optional-chain": "warn",
       },
-    },
-
-    // Override the project for ts files elsewhere.
-    {
-      files: ["example/*.ts", "example/*.tsx"],
-      parserOptions: { project: "example/tsconfig.json" },
     },
   ]
 };

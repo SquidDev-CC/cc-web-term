@@ -1,4 +1,4 @@
-import { Palette, PaletteColour, TerminalData, defaultPalette } from "./data";
+import { type Palette, type PaletteColour, TerminalData, defaultPalette } from "./data";
 
 export type Font = {
   path: string,
@@ -9,7 +9,7 @@ export type Font = {
   scale: number,
   margin: number,
 
-  paletteCache: { [key: string]: HTMLCanvasElement },
+  paletteCache: Record<string, HTMLCanvasElement>,
 };
 
 export const cellWidth = 6;
@@ -17,14 +17,14 @@ export const cellHeight = 9;
 
 export const terminalMargin = 4;
 
-const fonts: { [key: string]: Font } = {};
+const fonts: Record<string, Font> = {};
 
-const loadPalette = ({ image, paletteCache }: Font, colour: PaletteColour) => {
+const loadPalette = ({ image, paletteCache }: Font, colour: PaletteColour): HTMLCanvasElement => {
   const cached = paletteCache[colour];
   if (cached) return cached;
 
   const canvas = document.createElement("canvas");
-  const context = canvas.getContext("2d") as CanvasRenderingContext2D;
+  const context = canvas.getContext("2d")!;
 
   canvas.width = image.width;
   canvas.height = image.height;
@@ -100,7 +100,7 @@ export const background = (
 
   ctx.beginPath();
   ctx.rect(cellX, cellY, actualWidth, actualHeight);
-  ctx.fillStyle = palette[color] || palette["f"];
+  ctx.fillStyle = palette[color] || palette.f;
   ctx.fill();
 };
 

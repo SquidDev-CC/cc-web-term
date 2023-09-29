@@ -1,4 +1,4 @@
-const pad = (val: number, len: number) => {
+const pad = (val: number, len: number): string => {
   const str = val.toString();
   return str.length >= len ? str : "0".repeat(len - str.length) + str;
 };
@@ -15,7 +15,7 @@ export default (prefix: string, extension: string, blob: Blob | null): void => {
 
   // Somewhat inspired by https://github.com/eligrey/FileSaver.js/blob/master/src/FileSaver.js
   // Goodness knows how well this works on non-modern browsers.
-  const element = document.createElement("a") as HTMLAnchorElement;
+  const element = document.createElement("a");
   const url = URL.createObjectURL(blob);
 
   const now = new Date();

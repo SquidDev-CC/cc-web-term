@@ -1,7 +1,7 @@
 import type { KeyCode } from "./terminal/input";
 
 export class Semaphore {
-  private readonly listeners: Set<() => void> = new Set();
+  private readonly listeners = new Set<() => void>();
 
   public attach(listener: () => void): void {
     this.listeners.add(listener);
@@ -28,7 +28,7 @@ export interface ComputerActionable {
   /**
    * Queue an event on the computer
    */
-  queueEvent(event: string, args: LuaValue[]): void;
+  queueEvent(event: string, args: Array<LuaValue>): void;
 
   /**
    * Fire a {@code key} event.

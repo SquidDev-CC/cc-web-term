@@ -1,37 +1,38 @@
-import { Component, h, render } from "preact";
+import { type FunctionalComponent, h, render } from "preact";
+import { useMemo, useState } from "preact/hooks";
 
 import termFont from "../assets/term_font.png";
-import { ComputerActionable, KeyCode, LuaValue, Semaphore, Terminal, TerminalData, lwjgl2Code } from "../dist/index";
+import { type ComputerActionable, type KeyCode, type LuaValue, Semaphore, Terminal, TerminalData, lwjgl2Code } from "../dist/index";
 // Typically would import from "cc-web-term" instead.
 
-type TerminalState = {
-  on: boolean,
-};
 
-class TerminalDemo extends Component<unknown, TerminalState> implements ComputerActionable {
-  private readonly semaphore = new Semaphore();
-  private readonly term = new TerminalData();
+class BasicComputer implements ComputerActionable {
+  public readonly semaphore = new Semaphore();
+  public readonly term = new TerminalData();
 
-  public constructor() {
-    super();
+  private readonly setOn: (on: boolean) => void;
+  private y: number = 0;
 
-    this.setState({ on: true });
+  public constructor(setOn: (on: boolean) => void) {
+    this.setOn = setOn;
     this.term.resize(51, 19);
   }
 
-  public render(_: unknown, { on }: TerminalState) {
-    return <Terminal
-      id={123} label={"My computer"} on={on}
-      changed={this.semaphore} computer={this} focused={true} terminal={this.term}
-      font={termFont} />;
-  }
+  private write(text: string): void {
+    const width = this.term.sizeX;
+    const height = this.term.sizeY;
 
-  private write(text: string) {
-    this.term.text[0] = text + " ".repeat(51 - text.length);
+    const line = text.length >= width ? text.substring(0, width) : text + " ".repeat(51 - text.length);
+    if (this.y == height) {
+      this.term.text.shift();
+      this.term.text[height - 1] = line;
+    } else {
+      this.term.text[this.y++] = line;
+    }
     this.semaphore.signal();
   }
 
-  public queueEvent(event: string, args: LuaValue[]) {
+  public queueEvent(event: string, args: Array<LuaValue>): void {
     this.write(`Got ${event} ${JSON.stringify(args)}`);
   }
 
@@ -45,20 +46,30 @@ class TerminalDemo extends Component<unknown, TerminalState> implements Computer
     if (code !== undefined) this.queueEvent("key_up", [code]);
   }
 
-  public turnOn() {
+  public turnOn(): void {
     this.write("On");
-    this.setState({ on: true });
+    this.setOn(true);
   }
 
-  public shutdown() {
+  public shutdown(): void {
     this.write("Shutdown");
-    this.setState({ on: false });
+    this.setOn(false);
   }
 
-  public reboot() {
+  public reboot(): void {
     this.write("Reboot");
-    this.setState({ on: true });
+    this.setOn(true);
   }
 }
-const page = document.getElementById("page") as HTMLElement;
-render(<TerminalDemo />, page, page.lastElementChild || undefined);
+
+const TerminalDemo: FunctionalComponent<unknown> = () => {
+  const [on, setOn] = useState(false);
+  const computer = useMemo(() => new BasicComputer(setOn), [setOn]);
+  return <Terminal
+    id={123} label={"My computer"} on={on}
+    changed={computer.semaphore} computer={computer} focused={true} terminal={computer.term}
+    font={termFont} />;
+};
+
+
+render(<TerminalDemo />, document.getElementById("page")!);

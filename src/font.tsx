@@ -1,7 +1,7 @@
-import { VNode, h } from "preact";
-import { iconFont } from "./styles.css";
+import { type FunctionalComponent, type JSX, h } from "preact";
+import { iconFont } from "./styles.module.css";
 
-const mk = (child: VNode<unknown>, viewbox?: string) => {
+const mk = (child: JSX.Element, viewbox?: string): FunctionalComponent<unknown> => {
   const node = <svg xmlns="http://www.w3.org/2000/svg" viewBox={viewbox ?? "0 0 1000 1000"} class={iconFont}>
     {child}
   </svg>;

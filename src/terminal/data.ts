@@ -1,5 +1,5 @@
 export type PaletteColour = string;
-export type Palette = { [colour: string]: PaletteColour };
+export type Palette = Record<string, PaletteColour>;
 
 export const defaultPalette: Palette = {
   0: "rgb(240,240,240)", // White
@@ -21,9 +21,9 @@ export const defaultPalette: Palette = {
 };
 
 export class TerminalData {
-  public text: string[];
-  public fore: string[];
-  public back: string[];
+  public text: Array<string> = [];
+  public fore: Array<string> = [];
+  public back: Array<string> = [];
 
   public palette: Palette = defaultPalette;
 
@@ -36,19 +36,13 @@ export class TerminalData {
   public cursorY: number = 0;
   public cursorBlink: boolean = false;
 
-  public constructor() {
-    this.text = [];
-    this.fore = [];
-    this.back = [];
-  }
-
   public resize(width: number, height: number): void {
     this.sizeX = width;
     this.sizeY = height;
 
-    this.text = new Array(height);
-    this.fore = new Array(height);
-    this.back = new Array(height);
+    this.text = new Array<string>(height);
+    this.fore = new Array<string>(height);
+    this.back = new Array<string>(height);
 
     let baseText = "";
     let baseFore = "";

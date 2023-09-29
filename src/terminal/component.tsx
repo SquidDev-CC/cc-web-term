@@ -1,4 +1,4 @@
-import { Component, ComponentChild, JSX, h } from "preact";
+import { Component, type ComponentChild, type JSX, h } from "preact";
 import type { ComputerActionable, Semaphore } from "../computer";
 import { GIF } from "../files/gif";
 import saveBlob from "../files/save";
@@ -7,7 +7,7 @@ import logger from "../log";
 import {
   actionButton, terminalBar, terminalButton, terminalButtonsRight, terminalCanvas, terminalInfo,
   terminalInput, terminalProgress, terminalView, terminalWrapper,
-} from "../styles.css";
+} from "../styles.module.css";
 import type { TerminalData } from "./data";
 import { convertKey, convertMouseButton, convertMouseButtons } from "./input";
 import * as render from "./render";
@@ -40,18 +40,19 @@ type TerminalState = {
   progress: number,
 };
 
-const clamp = (value: number, min: number, max: number) => {
+const clamp = (value: number, min: number, max: number): number => {
   if (value < min) return min;
   if (value > max) return max;
   return value;
 };
 
-const labelElement = (id: number | null, label: string | null) => {
+const labelElement = (id: number | null, label: string | null): string => {
   if (id === null && label === null) return "Unlabeled computer";
   if (id === null) return `${label}`;
   if (label === null) return `Computer #${id}`;
   return `${label} (Computer #${id})`;
 };
+
 
 export class Terminal extends Component<TerminalProps, TerminalState> {
   private canvasElem?: HTMLCanvasElement;
@@ -65,7 +66,7 @@ export class Terminal extends Component<TerminalProps, TerminalState> {
   private mounted: boolean = false;
   private drawQueued: boolean = false;
 
-  private readonly vdom: JSX.Element[];
+  private readonly vdom: Array<JSX.Element>;
 
   private lastX: number = -1;
   private lastY: number = -1;
@@ -93,12 +94,12 @@ export class Terminal extends Component<TerminalProps, TerminalState> {
   public componentDidMount(): void {
     // Fetch the "key" elements
     const base = this.base as Element;
-    this.canvasElem = base.querySelector(`.${terminalCanvas}`) as HTMLCanvasElement;
-    this.canvasContext = this.canvasElem.getContext("2d") as CanvasRenderingContext2D;
-    this.inputElem = base.querySelector(`.${terminalInput}`) as HTMLInputElement;
-    this.wrapperElem = base.querySelector(`.${terminalWrapper}`) as HTMLDivElement;
+    this.canvasElem = base.querySelector(`.${terminalCanvas}`)!;
+    this.canvasContext = this.canvasElem.getContext("2d")!;
+    this.inputElem = base.querySelector(`.${terminalInput}`)!;
+    this.wrapperElem = base.querySelector(`.${terminalWrapper}`)!;
 
-    // Subscribe to some events to allow us to shedule a redraw
+    // Subscribe to some events to allow us to schedule a redraw
     window.addEventListener("resize", this.onResized);
     this.props.changed.attach(this.onChanged);
 
@@ -190,7 +191,7 @@ export class Terminal extends Component<TerminalProps, TerminalState> {
     }
   }
 
-  private draw(time: number) {
+  private draw(time: number): void {
     if (!this.canvasElem || !this.canvasContext || !this.wrapperElem) return;
 
     const { terminal, font: fontPath } = this.props;
@@ -199,7 +200,7 @@ export class Terminal extends Component<TerminalProps, TerminalState> {
 
     const font = render.loadFont(fontPath);
     if (font.promise) {
-      font.promise.then(() => this.queueDraw());
+      void font.promise.then(() => this.queueDraw());
       return;
     }
 
@@ -219,7 +220,7 @@ export class Terminal extends Component<TerminalProps, TerminalState> {
 
     // Calculate terminal scaling to fit the screen
     const actualWidth = this.wrapperElem.parentElement!.clientWidth - render.terminalMargin * 2;
-    /* [Note 'Padding']: 70px = 30px top-padding + action-bar + arbitrary bottom-padding. See styles.css too. */
+    /* [Note 'Padding']: 70px = 30px top-padding + action-bar + arbitrary bottom-padding. See styles.module.css too. */
     const actualHeight = this.wrapperElem.parentElement!.clientHeight - render.terminalMargin * 2 - 40;
     const width = sizeX * render.cellWidth;
     const height = sizeY * render.cellHeight;
@@ -266,12 +267,6 @@ export class Terminal extends Component<TerminalProps, TerminalState> {
 
     // Prevent blur when up/down-scaling
     ctx.imageSmoothingEnabled = false;
-    /* eslint-disable @typescript-eslint/no-explicit-any */
-    (ctx as any).oImageSmoothingEnabled = false;
-    (ctx as any).webkitImageSmoothingEnabled = false;
-    (ctx as any).mozImageSmoothingEnabled = false;
-    (ctx as any).msImageSmoothingEnabled = false;
-    /* eslint-enable @typescript-eslint/no-explicit-any */
 
     // And render!
     if (terminal.sizeX === 0 && terminal.sizeY === 0) {
@@ -281,12 +276,12 @@ export class Terminal extends Component<TerminalProps, TerminalState> {
     }
   }
 
-  private onResized = () => {
+  private onResized = (): void => {
     this.changed = true;
     this.queueDraw();
-  }
+  };
 
-  private paste(clipboard: DataTransfer | undefined) {
+  private paste(clipboard: DataTransfer | null): void {
     if (!clipboard) return;
     let content = clipboard.getData("text");
     if (!content) return;
@@ -297,7 +292,7 @@ export class Terminal extends Component<TerminalProps, TerminalState> {
     // Strip to the first newline
     content = content.replace(/[\r\n].*/, "");
     // Limit to 512 characters
-    content = content.substr(0, 512);
+    content = content.substring(0, 512);
 
     // Abort if we"re empty
     if (!content) return;
@@ -305,7 +300,7 @@ export class Terminal extends Component<TerminalProps, TerminalState> {
     this.props.computer.queueEvent("paste", [content]);
   }
 
-  private addGifFrame(force?: boolean) {
+  private addGifFrame(force?: boolean): void {
     if (!this.gif || !this.canvasContext) return;
 
     if (!this.lastGifFrame) {
@@ -323,14 +318,13 @@ export class Terminal extends Component<TerminalProps, TerminalState> {
     this.lastGifFrame = now;
   }
 
-  private onPaste = (event: ClipboardEvent) => {
+  private onPaste = (event: ClipboardEvent): void => {
     this.onEventDefault(event);
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    this.paste((event.clipboardData || (window as any).clipboardData));
-  }
+    this.paste(event.clipboardData);
+  };
 
-  private convertMousePos(event: MouseEvent) {
-    if(!this.canvasElem) throw "impossible";
+  private convertMousePos(event: MouseEvent): { x: number, y: number } {
+    if (!this.canvasElem) throw "impossible";
 
     const box = this.canvasElem.getBoundingClientRect();
     const x = clamp(Math.floor(
@@ -345,7 +339,7 @@ export class Terminal extends Component<TerminalProps, TerminalState> {
     return { x, y };
   }
 
-  private onMouse = (event: MouseEvent) => {
+  private onMouse = (event: MouseEvent): void => {
     this.onEventDefault(event);
     if (!this.canvasElem) return;
 
@@ -384,9 +378,9 @@ export class Terminal extends Component<TerminalProps, TerminalState> {
         }
       }
     }
-  }
+  };
 
-  private onMouseWheel = (event: WheelEvent) => {
+  private onMouseWheel = (event: WheelEvent): void => {
     this.onEventDefault(event);
     if (!this.canvasElem) return;
 
@@ -394,27 +388,19 @@ export class Terminal extends Component<TerminalProps, TerminalState> {
     if (event.deltaY !== 0) {
       this.props.computer.queueEvent("mouse_scroll", [Math.sign(event.deltaY), x, y]);
     }
-  }
+  };
 
-  private onEventDefault = (event: Event) => {
+  private onEventDefault = (event: Event): void => {
     event.preventDefault();
     if (this.inputElem) this.inputElem.focus();
-  }
+  };
 
-  private onKey = (event: KeyboardEvent) => {
+  private onKey = (event: KeyboardEvent): void => {
     if (!this.canvasElem) return;
 
-    // Handle pasting. Might be worth adding shift+insert support too.
-    // Note this is needed as we block the main paste event.
-    if (event.type === "keydown" && (event.ctrlKey && event.code === "KeyV")) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const data = (window as any).clipboardData;
-      if (data) {
-        this.paste(data);
-        this.onEventDefault(event);
-      }
-      return;
-    }
+    // When receiving Ctrl+V (hopefully the keyboard shortcut to paste!), don't
+    // queue an event, but don't cancel the default either.
+    if (event.ctrlKey && event.code === "KeyV") return;
 
     // Try to pull the key number from the event. We first try the key code
     // (ideal, as it's independent of layout), then the key itself, or the
@@ -433,9 +419,9 @@ export class Terminal extends Component<TerminalProps, TerminalState> {
     } else if (event.type === "keyup") {
       if (code !== undefined) this.props.computer.keyUp(code);
     }
-  }
+  };
 
-  private onInput = (event: Event) => {
+  private onInput = (event: Event): void => {
     const target = event.target as HTMLInputElement;
     this.onEventDefault(event);
 
@@ -447,36 +433,36 @@ export class Terminal extends Component<TerminalProps, TerminalState> {
     target.value = "";
 
     this.props.computer.queueEvent(value.length === 1 ? "char" : "paste", [value]);
-  }
+  };
 
-  private onTerminate = (event: Event) => {
+  private onTerminate = (event: Event): void => {
     this.onEventDefault(event);
     this.props.computer.queueEvent("terminate", []);
-  }
+  };
 
-  private onChanged = () => {
+  private onChanged = (): void => {
     this.changed = true;
     this.queueDraw();
-  }
+  };
 
-  private onPowerOff = (event: Event) => {
+  private onPowerOff = (event: Event): void => {
     this.onEventDefault(event);
     this.props.computer.shutdown();
-  }
+  };
 
-  private onPowerOn = (event: Event) => {
+  private onPowerOn = (event: Event): void => {
     this.onEventDefault(event);
     this.props.computer.turnOn();
-  }
+  };
 
-  private onScreenshot = (event: Event) => {
+  private onScreenshot = (event: Event): void => {
     this.onEventDefault(event);
     if (!this.canvasElem) return;
 
     this.canvasElem.toBlob(blob => saveBlob("computer", "png", blob), "image/png", 1);
-  }
+  };
 
-  private onRecord = (event: Event) => {
+  private onRecord = (event: Event): void => {
     this.onEventDefault(event);
 
     if (!this.canvasElem) return;
@@ -522,12 +508,12 @@ export class Terminal extends Component<TerminalProps, TerminalState> {
         this.gif = null;
         this.lastGifFrame = null;
     }
-  }
+  };
 
-  private makeFullscreen = (event: Event) => {
+  private makeFullscreen = (event: Event): void => {
     this.onEventDefault(event);
     (this.base as Element | null)?.requestFullscreen().catch(e => {
       console.error("Cannot make full-screen", e);
     });
-  }
+  };
 }

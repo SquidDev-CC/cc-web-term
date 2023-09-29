@@ -83,7 +83,7 @@ export type KeyCode = EKeyCode | { __keycodeBrand: never }
  * @see https://www.w3.org/TR/uievents-key/
  * @see https://www.w3.org/TR/uievents-code/
  */
-const keyboardCodes: { [key: string]: EKeyCode } = {
+const keyboardCodes: Record<string, EKeyCode> = {
   "Digit1": EKeyCode.One, "1": EKeyCode.One,
   "Digit2": EKeyCode.Two, "2": EKeyCode.Two,
   "Digit3": EKeyCode.Three, "3": EKeyCode.Three,

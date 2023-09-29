@@ -65,15 +65,15 @@ type Task = {
   height: number,
   quality: number,
   dither: false | string,
-  globalPalette: number[] | true,
+  globalPalette: Array<number> | true,
   repeat: number,
   canTransfer: boolean,
 };
 
 type TaskResult = {
   index: number,
-  globalPalette: number[] | true,
-  data: Uint8Array[],
+  globalPalette: Array<number> | true,
+  data: Array<Uint8Array>,
   pageSize: number,
   cursor: number,
 };
@@ -94,15 +94,15 @@ const frameDefaults: FrameOptions = {
 export class GIF {
   private running: boolean = false;
   private readonly options: Options;
-  private readonly frames: Frame[] = [];
+  private readonly frames: Array<Frame> = [];
 
-  private readonly freeWorkers: Worker[] = [];
-  private readonly activeWorkers: Worker[] = [];
+  private readonly freeWorkers: Array<Worker> = [];
+  private readonly activeWorkers: Array<Worker> = [];
 
   private imageParts?: Array<TaskResult | null>;
   private nextFrame: number = 0;
   private finishedFrames: number = 0;
-  private globalPalette: number[] | true = true;
+  private globalPalette: Array<number> | true = true;
 
   public onAbort?: () => void;
   public onProgress?: (progress: number) => void;
@@ -160,7 +160,7 @@ export class GIF {
     if (this.onAbort) this.onAbort();
   }
 
-  private spawnWorkers() {
+  private spawnWorkers(): number {
     const numWorkers = Math.min(this.options.workers, this.frames.length);
     for (let i = this.freeWorkers.length; i < numWorkers; i++) {
       log(`Spawning worker ${i}`);
@@ -168,7 +168,7 @@ export class GIF {
       worker.onmessage = (event: MessageEvent) => {
         this.activeWorkers.splice(this.activeWorkers.indexOf(worker), 1);
         this.freeWorkers.push(worker);
-        return this.frameFinished(event.data);
+        return this.frameFinished(event.data as TaskResult);
       };
       this.freeWorkers.push(worker);
     }
@@ -176,7 +176,7 @@ export class GIF {
     return numWorkers;
   }
 
-  private frameFinished(frame: TaskResult) {
+  private frameFinished(frame: TaskResult): void {
     if (!this.imageParts) throw new Error("No image data!");
 
     log(`Frame ${frame.index} finished - ${this.activeWorkers.length} active`);
@@ -199,9 +199,9 @@ export class GIF {
     }
   }
 
-  private finishRendering() {
+  private finishRendering(): void {
     if (!this.imageParts) throw new Error("No image data!");
-    const imageParts = this.imageParts as TaskResult[];
+    const imageParts = this.imageParts as Array<TaskResult>;
 
     let len = 0;
     for (const frame of imageParts) {
@@ -224,7 +224,7 @@ export class GIF {
     if (this.onFinished) this.onFinished(new Blob([data], { type: "image/gif" }));
   }
 
-  private renderNextFrame() {
+  private renderNextFrame(): void {
     if (this.freeWorkers.length === 0) throw new Error("No free workers");
     if (this.nextFrame >= this.frames.length) return;
 
@@ -235,7 +235,7 @@ export class GIF {
     return worker.postMessage(task);
   }
 
-  private getContextData(ctx: CanvasRenderingContext2D) {
+  private getContextData(ctx: CanvasRenderingContext2D): Uint8ClampedArray {
     return ctx.getImageData(0, 0, this.options.width, this.options.height).data;
   }
 
