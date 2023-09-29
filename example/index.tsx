@@ -46,6 +46,10 @@ class BasicComputer implements ComputerActionable {
     if (code !== undefined) this.queueEvent("key_up", [code]);
   }
 
+  public transferFiles(files: Array<{ name: string, contents: ArrayBuffer }>): void {
+    this.write("Transfer " + files.map(x => x.name).join(", "));
+  }
+
   public turnOn(): void {
     this.write("On");
     this.setOn(true);

@@ -85,7 +85,8 @@ export class Terminal extends Component<TerminalProps, TerminalState> {
     this.vdom = [
       <canvas class={terminalCanvas}
         onMouseDown={this.onMouse} onMouseUp={this.onMouse} onMouseMove={this.onMouse}
-        onWheel={this.onMouseWheel} onContextMenu={this.onEventDefault} />,
+        onWheel={this.onMouseWheel} onContextMenu={this.onEventDefault}
+        onDragOver={this.onEventDefault} onDrop={this.onDrop} />,
       <input type="text" class={terminalInput}
         onPaste={this.onPaste} onKeyDown={this.onKey} onKeyUp={this.onKey} onInput={this.onInput}></input>,
     ];
@@ -515,5 +516,31 @@ export class Terminal extends Component<TerminalProps, TerminalState> {
     (this.base as Element | null)?.requestFullscreen().catch(e => {
       console.error("Cannot make full-screen", e);
     });
+  };
+
+  private onDrop = (e: DragEvent): void => {
+    this.onEventDefault(e);
+
+    if (!e.dataTransfer) return;
+
+    const files: Array<File> = [];
+    if (e.dataTransfer.items) {
+      const items = e.dataTransfer.items;
+      // eslint-disable-next-line @typescript-eslint/prefer-for-of
+      for (let i = 0; i < items.length; i++) {
+        const item = items[i];
+        if (item.kind === "file") files.push(item.getAsFile()!);
+      }
+    } else {
+      const items = e.dataTransfer.files;
+      // eslint-disable-next-line @typescript-eslint/prefer-for-of
+      for (let i = 0; i < items.length; i++) files.push(items[i]);
+    }
+
+    if (files.length == 0) return;
+
+    Promise.all(files.map(async x => ({ name: x.name, contents: await x.arrayBuffer() })))
+      .then(x => this.props.computer.transferFiles(x))
+      .catch(e => console.error("Error handling drop", e));
   };
 }

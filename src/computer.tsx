@@ -61,4 +61,11 @@ export interface ComputerActionable {
    * Reboot the computer
    */
   reboot(): void;
+
+  /**
+   * Transfer some files to this computer.
+   *
+   * @param files A list of files and their contents.
+   */
+  transferFiles(files: Array<{ name: string, contents: ArrayBuffer }>): void;
 }
