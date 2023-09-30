@@ -1,6 +1,6 @@
 {
   "name": "@squid-dev/cc-web-term",
-  "version": "1.2.4",
+  "version": "2.0.0",
   "description": "A ComputerCraft terminal for the internet",
   "repository": {
     "type": "git",
