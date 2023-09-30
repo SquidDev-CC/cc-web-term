@@ -13,7 +13,7 @@
   "license": "BSD-3-Clause",
   "scripts": {
     "prepare:setup": "node tools/setup.js",
-    "prepare:tsc": "tsc --project .",
+    "prepare:tsc": "tsc --project . --verbatimModuleSyntax false",
     "prepare": "npm run prepare:setup && npm run prepare:tsc",
     "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "lint:fix": "eslint . --fix --ext .js,.jsx,.ts,.tsx",
