@@ -1,4 +1,4 @@
-import { Component, type ComponentChild, type JSX, h } from "preact";
+import { Component, type ComponentChild, type JSX, type RefObject, createRef, h } from "preact";
 import type { ComputerActionable, Semaphore } from "../computer";
 import { GIF } from "../files/gif";
 import saveBlob from "../files/save";
@@ -6,7 +6,7 @@ import { Camera, Fullscreen, NoEntry, Off, On, Videocam, VideocamRecording } fro
 import logger from "../log";
 import {
   actionButton, terminalBar, terminalButton, terminalButtonsRight, terminalCanvas, terminalInfo,
-  terminalInput, terminalProgress, terminalView, terminalWrapper,
+  terminalInput, terminalProgress, terminalView,
 } from "../styles.module.css";
 import type { TerminalData } from "./data";
 import { convertKey, convertMouseButton, convertMouseButtons } from "./input";
@@ -55,10 +55,10 @@ const labelElement = (id: number | null, label: string | null): string => {
 
 
 export class Terminal extends Component<TerminalProps, TerminalState> {
-  private canvasElem?: HTMLCanvasElement;
+  private readonly canvasElem: RefObject<HTMLCanvasElement> = createRef();
   private canvasContext?: CanvasRenderingContext2D;
-  private inputElem?: HTMLInputElement;
-  private wrapperElem?: HTMLDivElement;
+  private readonly inputElem: RefObject<HTMLInputElement> = createRef();
+  private readonly wrapperElem: RefObject<HTMLDivElement> = createRef();
 
   private changed: boolean = false;
   private lastBlink: boolean = false;
@@ -83,22 +83,18 @@ export class Terminal extends Component<TerminalProps, TerminalState> {
     });
 
     this.vdom = [
-      <canvas class={terminalCanvas}
+      <canvas class={terminalCanvas} ref={this.canvasElem}
         onMouseDown={this.onMouse} onMouseUp={this.onMouse} onMouseMove={this.onMouse}
         onWheel={this.onMouseWheel} onContextMenu={this.onEventDefault}
         onDragOver={this.onEventDefault} onDrop={this.onDrop} />,
-      <input type="text" class={terminalInput}
+      <input type="text" class={terminalInput} ref={this.inputElem}
         onPaste={this.onPaste} onKeyDown={this.onKey} onKeyUp={this.onKey} onInput={this.onInput}></input>,
     ];
   }
 
   public componentDidMount(): void {
     // Fetch the "key" elements
-    const base = this.base as Element;
-    this.canvasElem = base.querySelector(`.${terminalCanvas}`)!;
-    this.canvasContext = this.canvasElem.getContext("2d")!;
-    this.inputElem = base.querySelector(`.${terminalInput}`)!;
-    this.wrapperElem = base.querySelector(`.${terminalWrapper}`)!;
+    this.canvasContext = this.canvasElem.current!.getContext("2d")!;
 
     // Subscribe to some events to allow us to schedule a redraw
     window.addEventListener("resize", this.onResized);
@@ -110,16 +106,14 @@ export class Terminal extends Component<TerminalProps, TerminalState> {
     this.mounted = true;
 
     // Focus on the input element
-    if (this.props.focused) this.inputElem.focus();
+    if (this.props.focused) this.inputElem.current!.focus();
 
     // And let's draw!
     this.queueDraw();
   }
 
   public componentWillUnmount(): void {
-    this.canvasElem = undefined;
     this.canvasContext = undefined;
-    this.inputElem = undefined;
 
     this.props.changed.detach(this.onChanged);
     window.removeEventListener("resize", this.onResized);
@@ -132,7 +126,7 @@ export class Terminal extends Component<TerminalProps, TerminalState> {
   public render({ id, label, on }: TerminalProps, { recording, progress }: TerminalState): ComponentChild {
     const recordingDisabled = recording === RecordingState.Rendering;
     return <div class={terminalView}>
-      <div class={terminalWrapper}>
+      <div ref={this.wrapperElem}>
         {...this.vdom}
         <div class={terminalBar}>
           <button class={`${actionButton} ${terminalButton}`} type="button"
@@ -171,7 +165,7 @@ export class Terminal extends Component<TerminalProps, TerminalState> {
   public componentDidUpdate(): void {
     this.changed = true;
     this.queueDraw();
-    if (this.props.focused && this.inputElem) this.inputElem.focus();
+    if (this.props.focused) this.inputElem.current?.focus();
   }
 
   public queueDraw(): void {
@@ -219,10 +213,13 @@ export class Terminal extends Component<TerminalProps, TerminalState> {
     this.lastBlink = blink;
     this.changed = false;
 
+    const canvasElem = this.canvasElem.current!;
+    const wrapperElem = this.wrapperElem.current!;
+
     // Calculate terminal scaling to fit the screen
-    const actualWidth = this.wrapperElem.parentElement!.clientWidth - render.terminalMargin * 2;
+    const actualWidth = wrapperElem.parentElement!.clientWidth - render.terminalMargin * 2;
     /* [Note 'Padding']: 70px = 30px top-padding + action-bar + arbitrary bottom-padding. See styles.module.css too. */
-    const actualHeight = this.wrapperElem.parentElement!.clientHeight - render.terminalMargin * 2 - 40;
+    const actualHeight = wrapperElem.parentElement!.clientHeight - render.terminalMargin * 2 - 40;
     const width = sizeX * render.cellWidth;
     const height = sizeY * render.cellHeight;
 
@@ -258,12 +255,12 @@ export class Terminal extends Component<TerminalProps, TerminalState> {
     const canvasWidth = width * scale + render.terminalMargin * 2;
     const canvasHeight = height * scale + render.terminalMargin * 2;
 
-    if (this.canvasElem.height !== canvasHeight || this.canvasElem.width !== canvasWidth) {
-      this.canvasElem.height = canvasHeight;
-      this.canvasElem.width = canvasWidth;
+    if (canvasElem.height !== canvasHeight || canvasElem.width !== canvasWidth) {
+      canvasElem.height = canvasHeight;
+      canvasElem.width = canvasWidth;
 
-      this.canvasElem.style.height = `${canvasHeight}px`;
-      this.wrapperElem.style.width = this.canvasElem.style.width = `${canvasWidth}px`;
+      canvasElem.style.height = `${canvasHeight}px`;
+      wrapperElem.style.width = canvasElem.style.width = `${canvasWidth}px`;
     }
 
     // Prevent blur when up/down-scaling
@@ -325,16 +322,17 @@ export class Terminal extends Component<TerminalProps, TerminalState> {
   };
 
   private convertMousePos(event: MouseEvent): { x: number, y: number } {
-    if (!this.canvasElem) throw "impossible";
+    const canvasElem = this.canvasElem.current;
+    if (!canvasElem) throw "impossible";
 
-    const box = this.canvasElem.getBoundingClientRect();
+    const box = canvasElem.getBoundingClientRect();
     const x = clamp(Math.floor(
       (event.clientX - box.left - render.terminalMargin)
-      / (this.canvasElem.width - 2 * render.terminalMargin) * this.props.terminal.sizeX
+      / (canvasElem.width - 2 * render.terminalMargin) * this.props.terminal.sizeX
     ) + 1, 1, this.props.terminal.sizeX);
     const y = clamp(Math.floor(
       (event.clientY - box.top - render.terminalMargin)
-      / (this.canvasElem.height - 2 * render.terminalMargin) * this.props.terminal.sizeY
+      / (canvasElem.height - 2 * render.terminalMargin) * this.props.terminal.sizeY
     ) + 1, 1, this.props.terminal.sizeY);
 
     return { x, y };
@@ -393,7 +391,7 @@ export class Terminal extends Component<TerminalProps, TerminalState> {
 
   private onEventDefault = (event: Event): void => {
     event.preventDefault();
-    if (this.inputElem) this.inputElem.focus();
+    this.inputElem.current?.focus();
   };
 
   private onKey = (event: KeyboardEvent): void => {
@@ -460,7 +458,7 @@ export class Terminal extends Component<TerminalProps, TerminalState> {
     this.onEventDefault(event);
     if (!this.canvasElem) return;
 
-    this.canvasElem.toBlob(blob => saveBlob("computer", "png", blob), "image/png", 1);
+    this.canvasElem.current?.toBlob(blob => saveBlob("computer", "png", blob), "image/png", 1);
   };
 
   private onRecord = (event: Event): void => {
@@ -476,8 +474,8 @@ export class Terminal extends Component<TerminalProps, TerminalState> {
       // If we're not recording, start recording.
       case RecordingState.None:
         this.gif = new GIF({
-          width: this.canvasElem.width,
-          height: this.canvasElem.height,
+          width: this.canvasElem.current!.width,
+          height: this.canvasElem.current!.height,
           quality: 10,
         });
         this.lastGifFrame = Date.now();

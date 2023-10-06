@@ -31,8 +31,6 @@
   justify-content: center;
 }
 
-.terminalWrapper { }
-
 .terminalCanvas {
   image-rendering: optimizeSpeed;
   image-rendering: -moz-crisp-edges;
